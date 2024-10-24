@@ -6,12 +6,28 @@ defmodule TaskManager.Tasks do
   import Ecto.Query, warn: false
   alias TaskManager.Repo
 
-  alias TaskManager.Tasks.{Task, Status}
+  alias TaskManager.Tasks.{Task, Status, Queries}
 
+  @topic inspect(__MODULE__)
 
+  def subscribe do
+    Phoenix.PubSub.subscribe(TaskManager.PubSub, @topic)
+  end
 
+  defp broadcast_change({:ok, result}, event) do
+    Phoenix.PubSub.broadcast(TaskManager.PubSub, @topic, {__MODULE__, event, result})
+    {:ok, result}
+  end
 
+  def get_tasks(assigns, opts \\ %{}), do: Map.merge(assigns, opts) |> fetch_tasks
 
+  defp fetch_tasks(assigns) do
+    Queries.get_tasks_query(assigns)
+    |> Repo.all()
+    |> Enum.map(&Map.from_struct/1)
+  end
+
+  def total_tasks(assigns, opts \\ %{}), do: Map.merge(assigns, opts) |> Queries.total_pages_from_query()
 
   @doc """
   Returns the list of tasks.
@@ -58,6 +74,7 @@ defmodule TaskManager.Tasks do
     %Task{}
     |> Task.changeset(attrs)
     |> Repo.insert()
+    |> broadcast_change([:task, :created])
   end
 
   @doc """
@@ -76,6 +93,7 @@ defmodule TaskManager.Tasks do
     task
     |> Task.changeset(attrs)
     |> Repo.update()
+    |> broadcast_change([:task, :updated])
   end
 
   @doc """
@@ -92,6 +110,7 @@ defmodule TaskManager.Tasks do
   """
   def delete_task(%Task{} = task) do
     Repo.delete(task)
+    |> broadcast_change([:task, :deleted])
   end
 
   @doc """

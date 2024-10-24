@@ -7,5 +7,6 @@
     "{config,lib,test}/**/*.{heex,ex,exs}",
     "priv/*/seeds.exs",
     "{lib,test}/**/*.sface"
-  ]
+  ],
+  line_length: 120
 ]
