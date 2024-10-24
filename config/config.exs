@@ -7,6 +7,26 @@
 # General application configuration
 import Config
 
+defmodule ConfigHelper do
+  @moduledoc """
+  Helper for importing config files
+  """
+  @doc """
+    Imports config file if it exists
+  """
+  def import_if_exists(config_path) do
+    full_path =
+      File.cwd!()
+      |> Path.join(config_path)
+
+    if File.exists?(full_path) do
+      import_config(full_path)
+    else
+      IO.warn("Config file #{config_path} does not exist. Skipping import.")
+    end
+  end
+end
+
 config :task_manager,
   ecto_repos: [TaskManager.Repo],
   generators: [timestamp_type: :utc_datetime]
@@ -30,6 +50,13 @@ config :task_manager, TaskManagerWeb.Endpoint,
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
 config :task_manager, TaskManager.Mailer, adapter: Swoosh.Adapters.Local
+
+ConfigHelper.import_if_exists("/deps/moon/config/surface.exs")
+
+config :surface, :components, [
+  {Moon.Design.Tooltip.Content, propagate_context_to_slots: true},
+  {Surface.Components.Form.ErrorTag, default_translator: {TaskManagerWeb.ErrorHelpers, :translate_error}}
+]
 
 # Configure esbuild (the version is required)
 config :esbuild,

@@ -8,6 +8,7 @@ config :task_manager, TaskManager.Repo,
   database: "task_manager_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
+  port: 5433,
   pool_size: 10
 
 # For development, we disable any cache and enable
