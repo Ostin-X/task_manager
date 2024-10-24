@@ -9,3 +9,18 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias TaskManager.Repo
+alias TaskManager.Tasks.Status
+
+statuses = [
+  %{"name" => "pending"},
+  %{"name" => "in_progress"},
+  %{"name" => "completed"}
+]
+
+for status <- statuses do
+  %Status{}
+  |> Status.changeset(status)
+  |> Repo.insert!()
+end

@@ -5,18 +5,23 @@ defmodule TaskManagerWeb.PollingLive do
   alias Moon.Design.Button
 
   def mount(_params, session, socket) do
+
+    statuses = Enum.map(TaskManager.Tasks.list_statuses(), & &1.name) |> Enum.join(", ")
+    |> IO.inspect
 #    current_user = get_current_user(session)
 
     #    IO.inspect(session)
-    IO.inspect(session, label: "session")
-    IO.inspect(socket.assigns, label: "assigns")
+#    IO.inspect(session, label: "session")
+#    IO.inspect(socket.assigns, label: "assigns")
 #    IO.inspect(socket.assigns.current_user, label: "assigns")
-    {:ok, socket}
+#    {:ok, socket}
+    {:ok, assign(socket, statuses: statuses)}
   end
 
   def render(assigns) do
     ~F"""
     <div>
+      <h1 class="text-2xl">{@statuses}</h1>
       <Button variant="outline" on_click="set_open">
         Show Drawer with Backdrop
       </Button>
