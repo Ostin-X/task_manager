@@ -11,6 +11,21 @@ defmodule TaskManagerWeb.Endpoint do
     same_site: "Lax"
   ]
 
+  plug(Plug.Static,
+    at: "/moon/assets",
+    from: :moon,
+    gzip: true,
+    only: ~w(assets themes images fonts svgs favicon.ico robots.txt),
+    cache_control_for_etags: "public, max-age=86400"
+  )
+
+  plug(Plug.Static,
+    at: "/moon_icons/",
+    from: :moon_icons,
+    gzip: true,
+    cache_control_for_etags: "public, max-age=86400"
+  )
+
   socket "/live", Phoenix.LiveView.Socket,
     websocket: [connect_info: [session: @session_options]],
     longpoll: [connect_info: [session: @session_options]]

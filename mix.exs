@@ -9,7 +9,8 @@ defmodule TaskManager.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      compilers: Mix.compilers() ++ [:surface]
     ]
   end
 
@@ -72,15 +73,15 @@ defmodule TaskManager.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
+      setup: ["deps.get", "ecto.setup", "assets.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": ["tailwind task_manager", "esbuild task_manager"],
+      "assets.setup": ["cmd --cd assets npm i", "esbuild.install --if-missing"],
+      "assets.build": ["cmd --cd assets npm run build", "esbuild default"],
       "assets.deploy": [
-        "tailwind task_manager --minify",
-        "esbuild task_manager --minify",
+        "cmd --cd assets npm run deploy",
+        "NODE_ENV=production esbuild default --minify",
         "phx.digest"
       ]
     ]

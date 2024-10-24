@@ -17,7 +17,8 @@ defmodule TaskManagerWeb.Router do
   scope "/", TaskManagerWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+#    get "/", PageController, :home
+    live "/", PollingLive
   end
 
   # Other scopes may use custom stacks.

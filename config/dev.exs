@@ -55,11 +55,12 @@ config :task_manager, TaskManagerWeb.Endpoint,
 
 # Watch static and templates for browser reloading.
 config :task_manager, TaskManagerWeb.Endpoint,
+  reloadable_compilers: [:gettext, :elixir, :app, :surface],
   live_reload: [
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/task_manager_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/task_manager_web/(controllers|live|components)/.*(ex|heex|sface|js)$"
     ]
   ]
 
