@@ -8,8 +8,8 @@ defmodule TaskManagerWeb.PollingLive do
 #    current_user = get_current_user(session)
 
     #    IO.inspect(session)
-#    IO.inspect(session, label: "session")
-#    IO.inspect(socket.assigns, label: "assigns")
+    IO.inspect(session, label: "session")
+    IO.inspect(socket.assigns, label: "assigns")
 #    IO.inspect(socket.assigns.current_user, label: "assigns")
     {:ok, socket}
   end
