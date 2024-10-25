@@ -20,8 +20,10 @@ defmodule TaskManagerWeb.Router do
   scope "/", TaskManagerWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    live "/", TasksLive
-    live "/test", PollingLive
+    live_session :require_authenticated_admin, on_mount: [{TaskManagerWeb.UserAuth, :ensure_authenticated}] do
+      live "/", TasksLive
+      live "/test", PollingLive
+    end
   end
 
   # Other scopes may use custom stacks.

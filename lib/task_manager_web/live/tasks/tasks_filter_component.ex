@@ -120,7 +120,14 @@ defmodule TaskManagerWeb.TasksFilterComponent do
         <Form.Field field={:filter} class="w-1/2">
           <Form.Input placeholder="Filter by username or email" class="w-full" opts={phx_debounce: "1000"} />
         </Form.Field>
-        <Button class="w-1/8 bg-trunks" size="sm" on_click="filters_click" value="clear">Clear filter</Button>
+        <Button
+          class={"w-1/8 #{if @filter_form.params == %{"status_id" => 0}, do: "bg-trunks", else: "bg-bulma"}"}
+          size="sm"
+          on_click="filters_click"
+          value="clear"
+        >
+          Clear filter
+        </Button>
       </Form>
     </div>
     """

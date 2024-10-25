@@ -14,6 +14,7 @@ defmodule TaskManagerWeb.TasksTableComponent do
   alias Moon.Design.{
     Table,
     Table.Column,
+    Button,
     Drawer
   }
 
@@ -27,6 +28,17 @@ defmodule TaskManagerWeb.TasksTableComponent do
   prop status_options, :list, required: true
   prop status_selected, :integer, required: true
   prop filter_form, :form, required: true
+
+  def handle_event("table_create_drawer", _, %{assigns: %{default_form: default_form}} = socket) do
+    Drawer.open("task_drawer")
+
+    {:noreply,
+     assign(socket,
+       drawer_title: "New Task",
+       is_open: true,
+       form: default_form
+     )}
+  end
 
   def handle_event("table_single_row_click_drawer", %{"selected" => selected}, socket) do
     task = Utils.task_from_socket(selected, socket)
@@ -55,8 +67,9 @@ defmodule TaskManagerWeb.TasksTableComponent do
 
   def render(assigns) do
     ~F"""
-    <div class="text-left">
-      <h1 class="text-3xl font-bold">Tasks</h1>
+    <div class="flex items-center">
+      <Button on_click="table_create_drawer" class="bg-bulma ps-4 pe-4 py-5">Add New Task</Button>
+      <h1 class="text-3xl font-bold flex-grow ml-4">Tasks</h1>
     </div>
     <div class="flex space-x-4 my-4">
       <TasksFilterComponent {=@status_selected} {=@status_options} {=@filter_form} />
@@ -78,14 +91,17 @@ defmodule TaskManagerWeb.TasksTableComponent do
         <Column name="id" label="ID" sortable class="w-1/8">
           {task.id}
         </Column>
-        <Column name="title" label="Title" sortable class="w-1/4">
+        <Column name="title" label="Title" sortable class="w-1/8">
           {task.title}
         </Column>
         <Column name="description" label="Description" class="w-1/2">
           {task.description}
         </Column>
-        <Column name="status" label="Status" class="w-1/4">
+        <Column name="status" label="Status" class="w-1/8">
           {task.status.name}
+        </Column>
+        <Column name="author" label="Author" class="w-1/8">
+          {hd(String.split(task.user.email, "@"))}
         </Column>
       </Table>
     </div>

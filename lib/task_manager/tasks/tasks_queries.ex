@@ -86,7 +86,7 @@ defmodule TaskManager.Tasks.Queries do
       order_by: [{^sort_order, field(t, ^sort_key)}],
       limit: ^limit,
       offset: ^offset,
-      select: %{t | user: %{id: u.id, name: u.email}, status: %{id: s.id, name: s.name}}
+      select: %{t | user: %{id: u.id, email: u.email}, status: %{id: s.id, name: s.name}}
     )
   end
 

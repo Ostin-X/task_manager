@@ -56,7 +56,7 @@ ConfigHelper.import_if_exists("/deps/moon/config/surface.exs")
 config :surface, :components, [
   {Moon.Design.Tooltip.Content, propagate_context_to_slots: true},
   {Moon.Parts.Header, propagate_context_to_slots: true},
-  {Surface.Components.Form.ErrorTag, default_translator: {TaskManagerWeb.ErrorHelpers, :translate_error}}
+  {TaskManagerWeb.DrawerComponent, propagate_context_to_slots: true}
 ]
 
 # Configure esbuild (the version is required)

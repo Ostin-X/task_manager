@@ -19,6 +19,8 @@ defmodule TaskManager.Tasks do
     {:ok, result}
   end
 
+  defp broadcast_change({:error, reason}, _event), do: {:error, reason}
+
   def get_tasks(assigns, opts \\ %{}), do: Map.merge(assigns, opts) |> fetch_tasks
 
   defp fetch_tasks(assigns) do
