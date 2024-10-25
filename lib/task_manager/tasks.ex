@@ -27,7 +27,8 @@ defmodule TaskManager.Tasks do
     |> Enum.map(&Map.from_struct/1)
   end
 
-  def total_tasks(assigns, opts \\ %{}), do: Map.merge(assigns, opts) |> Queries.total_pages_from_query()
+  def total_tasks(assigns, opts \\ %{}),
+    do: Map.merge(assigns, opts) |> Queries.base_filtered_tasks_query() |> Repo.aggregate(:count, :id)
 
   @doc """
   Returns the list of tasks.
@@ -154,4 +155,20 @@ defmodule TaskManager.Tasks do
 
   """
   def get_status!(id), do: Repo.get!(Status, id)
+
+  @doc """
+  Fetches and formats the list of statuses for use in a dropdown.
+
+  This function retrieves all statuses and formats them as a list of maps,
+  where each map includes a `:value` key with the status ID and a `:key` key with the status name.
+  It is primarily used for populating a dropdown menu with status options.
+
+  ## Examples
+
+      iex> get_status_options()
+      [%{value: 1, key: "Open"}, %{value: 2, key: "In Progress"}, %{value: 3, key: "Closed"}]
+
+  """
+  def get_status_options(),
+    do: list_statuses() |> Enum.map(fn %Status{id: id, name: name} -> %{value: id, key: name} end)
 end

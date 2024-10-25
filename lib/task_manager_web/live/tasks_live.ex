@@ -13,8 +13,9 @@ defmodule TaskManagerWeb.TasksLive do
     #      AdminDrawerComponent,
     #      SnackbarComponent,
     #      DeleteModalComponent,
-    #      AdminUsersDropdownSelectOperatorComponent,
+    TasksFilterComponent,
     #      AdminUsersFormComponent,
+    FilterChangeset,
     Utils
   }
 
@@ -26,10 +27,10 @@ defmodule TaskManagerWeb.TasksLive do
   data total_pages, :integer, default: 1
   data on_page_limit, :integer, default: 10
   data filter, :string, default: ""
-  data filter_form, :form, default: nil
+  data filter_form, :form, default: to_form(FilterChangeset.filter_changeset(%FilterChangeset{}, %{"status_id" => 0}))
   data loading, :boolean, default: true
   data status_options, :list, default: []
-  data status_selected, :integer, default: nil
+  data status_selected, :integer, default: 0
 
   #  data drawer_title, :string, default: nil
   data is_open, :boolean, default: false
@@ -46,11 +47,13 @@ defmodule TaskManagerWeb.TasksLive do
 
     {tasks_task, total_tasks_task} = Utils.get_tasks_async_tasks(assigns)
     total_tasks = Task.await(total_tasks_task)
+    status_task = Task.async(fn -> Tasks.get_status_options() end)
 
     {:noreply,
      assign(socket,
        total_pages: ceil(total_tasks / on_page_limit),
        total_tasks: total_tasks,
+       status_options: Task.await(status_task),
        tasks: Task.await(tasks_task),
        loading: false
      )}
@@ -92,13 +95,8 @@ defmodule TaskManagerWeb.TasksLive do
   #           ],
   #      do: AdminDrawerComponent.handle_event(event, params, socket)
 
-  #  def handle_event("dropdown_click_operators", params, socket),
-  #    do:
-  #      AdminUsersDropdownSelectOperatorComponent.handle_event(
-  #        "dropdown_click_operators",
-  #        params,
-  #        socket
-  #      )
+  def handle_event("filters_click", params, socket),
+    do: TasksFilterComponent.handle_event("filters_click", params, socket)
 
   #  def handle_event("modal_approve_set_close", params, socket),
   #    do: DeleteModalComponent.handle_event("modal_approve_set_close", params, socket)

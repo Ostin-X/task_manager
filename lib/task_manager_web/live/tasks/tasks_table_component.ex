@@ -4,7 +4,7 @@ defmodule TaskManagerWeb.TasksTableComponent do
 
   alias TaskManagerWeb.{
     PaginationComponent,
-    #    TasksDropdownSelectOperatorComponent,
+    TasksFilterComponent,
     Utils
   }
 
@@ -14,8 +14,7 @@ defmodule TaskManagerWeb.TasksTableComponent do
   alias Moon.Design.{
     Table,
     Table.Column,
-    Drawer,
-    Snackbar
+    Drawer
   }
 
   prop tasks, :list, required: true
@@ -54,24 +53,16 @@ defmodule TaskManagerWeb.TasksTableComponent do
     {:noreply, assign(socket, sort: sort, tasks: Tasks.get_tasks(assigns, %{sort: sort}))}
   end
 
-  #    <div class="flex space-x-4 my-4">
-  #      <AdminUsersDropdownSelectOperatorComponent
-  #        {=@operator_selected}
-  #        {=@role_selected}
-  #        {=@operator_options}
-  #        {=@role_options}
-  #        {=@operator_locked}
-  #        {=@filter_form}
-  #      />
-  #    </div>
   def render(assigns) do
     ~F"""
     <div class="text-left">
       <h1 class="text-3xl font-bold">Tasks</h1>
     </div>
+    <div class="flex space-x-4 my-4">
+      <TasksFilterComponent {=@status_selected} {=@status_options} {=@filter_form} />
+    </div>
     <div>
-      {(@current_page - 1) * 10 + min(1, @total_tasks)}-{min(@current_page * 10, @total_tasks)} of {@total_tasks}
-      <PaginationComponent {=@total_pages} {=@current_page} />
+      <PaginationComponent {=@total_pages} {=@current_page} {=@total_tasks} />
       <Table
         items={task <- @tasks}
         {=@sort}
@@ -84,13 +75,16 @@ defmodule TaskManagerWeb.TasksTableComponent do
         row_gap="border-spacing-y-1"
         class="bg-frieza-10 w-full block md:table"
       >
+        <Column name="id" label="ID" sortable class="w-1/8">
+          {task.id}
+        </Column>
         <Column name="title" label="Title" sortable class="w-1/4">
           {task.title}
         </Column>
-        <Column name="description" label="Description" sortable class="w-1/2">
+        <Column name="description" label="Description" class="w-1/2">
           {task.description}
         </Column>
-        <Column name="status" label="Status" sortable class="w-1/4">
+        <Column name="status" label="Status" class="w-1/4">
           {task.status.name}
         </Column>
       </Table>

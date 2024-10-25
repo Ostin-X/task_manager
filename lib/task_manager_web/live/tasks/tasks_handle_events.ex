@@ -4,10 +4,10 @@ defmodule TaskManagerWeb.TasksHandleEvents do
   """
   use Surface.Component
 
-  alias Moon.Design.{Drawer, Snackbar, Modal}
+#  alias Moon.Design.{Drawer, Snackbar, Modal}
   alias TaskManager.Tasks
   alias TaskManager.Tasks.Task, as: MyTask
-  alias TaskManagerWeb.Utils
+#  alias TaskManagerWeb.Utils
 
   def handle_event(
         "validate",
@@ -16,7 +16,7 @@ defmodule TaskManagerWeb.TasksHandleEvents do
       ) do
     form =
       task_data
-      |> Tasks.changeset(params)
+      |> MyTask.changeset(params)
       |> Map.put(:action, :insert)
       |> to_form
 
