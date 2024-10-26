@@ -173,4 +173,10 @@ defmodule TaskManager.Tasks do
   """
   def get_status_options(),
     do: list_statuses() |> Enum.map(fn %Status{id: id, name: name} -> %{value: id, key: name} end)
+
+    def create_status(attrs \\ %{}) do
+      %Status{}
+      |> Status.changeset(attrs)
+      |> Repo.insert()
+    end
 end

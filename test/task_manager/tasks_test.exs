@@ -21,7 +21,9 @@ defmodule TaskManager.TasksTest do
     end
 
     test "create_task/1 with valid data creates a task" do
-      valid_attrs = %{description: "some description", title: "some title"}
+      user = TaskManager.AccountsFixtures.user_fixture()
+      status = TaskManager.TasksFixtures.status_fixture()
+      valid_attrs = %{description: "some description", title: "some title", user_id: user.id, status_id: status.id}
 
       assert {:ok, %Task{} = task} = Tasks.create_task(valid_attrs)
       assert task.description == "some description"

@@ -127,13 +127,15 @@ defmodule TaskManagerWeb.UserSettingsLiveTest do
         |> render_change(%{
           "current_password" => "invalid",
           "user" => %{
-            "password" => "too short",
+            "password" => "too",
+#            "password" => "too short",
             "password_confirmation" => "does not match"
           }
         })
 
       assert result =~ "Change Password"
-      assert result =~ "should be at least 12 character(s)"
+      assert result =~ "should be at least 5 character(s)"
+#      assert result =~ "should be at least 12 character(s)"
       assert result =~ "does not match password"
     end
 
@@ -145,14 +147,16 @@ defmodule TaskManagerWeb.UserSettingsLiveTest do
         |> form("#password_form", %{
           "current_password" => "invalid",
           "user" => %{
-            "password" => "too short",
+            "password" => "too",
+#            "password" => "too short",
             "password_confirmation" => "does not match"
           }
         })
         |> render_submit()
 
       assert result =~ "Change Password"
-      assert result =~ "should be at least 12 character(s)"
+      assert result =~ "should be at least 5 character(s)"
+#      assert result =~ "should be at least 12 character(s)"
       assert result =~ "does not match password"
       assert result =~ "is not valid"
     end

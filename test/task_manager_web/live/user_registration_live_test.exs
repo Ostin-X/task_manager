@@ -28,11 +28,13 @@ defmodule TaskManagerWeb.UserRegistrationLiveTest do
       result =
         lv
         |> element("#registration_form")
-        |> render_change(user: %{"email" => "with spaces", "password" => "too short"})
+        |> render_change(user: %{"email" => "with spaces", "password" => "too"})
+#        |> render_change(user: %{"email" => "with spaces", "password" => "too short"})
 
       assert result =~ "Register"
       assert result =~ "must have the @ sign and no spaces"
-      assert result =~ "should be at least 12 character"
+      assert result =~ "should be at least 5 character"
+#      assert result =~ "should be at least 12 character"
     end
   end
 

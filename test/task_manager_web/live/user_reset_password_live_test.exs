@@ -40,10 +40,12 @@ defmodule TaskManagerWeb.UserResetPasswordLiveTest do
         lv
         |> element("#reset_password_form")
         |> render_change(
-          user: %{"password" => "secret12", "password_confirmation" => "secret123456"}
+          user: %{"password" => "sec", "password_confirmation" => "secret123456"}
+#          user: %{"password" => "secret12", "password_confirmation" => "secret123456"}
         )
 
-      assert result =~ "should be at least 12 character"
+      assert result =~ "should be at least 5 character"
+#      assert result =~ "should be at least 12 character"
       assert result =~ "does not match password"
     end
   end
@@ -75,14 +77,16 @@ defmodule TaskManagerWeb.UserResetPasswordLiveTest do
         lv
         |> form("#reset_password_form",
           user: %{
-            "password" => "too short",
+            "password" => "too",
+#            "password" => "too short",
             "password_confirmation" => "does not match"
           }
         )
         |> render_submit()
 
       assert result =~ "Reset Password"
-      assert result =~ "should be at least 12 character(s)"
+      assert result =~ "should be at least 5 character(s)"
+#      assert result =~ "should be at least 12 character(s)"
       assert result =~ "does not match password"
     end
   end
