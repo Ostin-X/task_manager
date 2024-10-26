@@ -22,8 +22,6 @@ defmodule TaskManagerWeb.Utils do
       iex> Task.await(total_future)
       2
   """
-  import Timex
-
   alias TaskManager.Tasks
   alias TaskManager.Tasks.Task, as: MyTask
 

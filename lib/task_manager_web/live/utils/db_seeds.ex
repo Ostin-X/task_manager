@@ -41,7 +41,7 @@ defmodule TaskManagerWeb.GlobalSetup do
     status_ids = Repo.all(Status) |> Enum.map(& &1.id)
 
     # Use lorem to generate random titles and descriptions for tasks
-    for i <- 1..31 do
+    for _ <- 1..31 do
       user = Enum.random(users)
       status = Enum.random(status_ids)
 

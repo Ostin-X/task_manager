@@ -14,17 +14,14 @@ defmodule TaskManagerWeb.TasksHandleEvents do
   """
   use Surface.Component
 
-  alias Moon.Design.{Drawer, Snackbar, Modal}
+  alias Moon.Design.{Snackbar, Modal}
   alias TaskManager.Tasks
   alias TaskManager.Tasks.Task, as: MyTask
   alias TaskManagerWeb.DrawerComponent
 
-  @doc """
-  Validates task data based on the parameters provided by the user.
-
-  Adds the current user's ID to the parameters before validation and returns an updated form 
-  with any validation errors.
-  """
+  # Validates task data based on the parameters provided by the user.
+  # Adds the current user's ID to the parameters before validation and returns an updated form 
+  # with any validation errors.
   def handle_event(
         "validate",
         %{"task" => params},
@@ -41,12 +38,9 @@ defmodule TaskManagerWeb.TasksHandleEvents do
     {:noreply, assign(socket, form: form)}
   end
 
-  @doc """
-  Creates a new task with the current form parameters and assigns the user ID.
-
-  If creation succeeds, closes the drawer, displays a "created" snackbar, and resets the form.
-  On failure, updates the form to display errors.
-  """
+  # Creates a new task with the current form parameters and assigns the user ID.
+  # If creation succeeds, closes the drawer, displays a "created" snackbar, and resets the form.
+  # On failure, updates the form to display errors.
   def handle_event(
         "create",
         _,
@@ -71,12 +65,9 @@ defmodule TaskManagerWeb.TasksHandleEvents do
     {:noreply, socket}
   end
 
-  @doc """
-  Updates an existing task if there are changes in the parameters.
-
-  On success, closes the drawer, displays an "updated" snackbar, and resets the form.
-  If validation fails, updates the form with the relevant error messages.
-  """
+  # Updates an existing task if there are changes in the parameters.
+  # On success, closes the drawer, displays an "updated" snackbar, and resets the form.
+  # If validation fails, updates the form with the relevant error messages.
   def handle_event(
         "update",
         _,
@@ -97,11 +88,8 @@ defmodule TaskManagerWeb.TasksHandleEvents do
     end
   end
 
-  @doc """
-  Deletes the specified task, providing UI feedback through modal and snackbar notifications.
-
-  On success, closes the drawer and modal, and opens a "deleted" snackbar.
-  """
+  # Deletes the specified task, providing UI feedback through modal and snackbar notifications.
+  # On success, closes the drawer and modal, and opens a "deleted" snackbar.
   def handle_event(
         "delete",
         _,
@@ -120,11 +108,8 @@ defmodule TaskManagerWeb.TasksHandleEvents do
     end
   end
 
-  @doc """
-  Handles pagination clicks, updating the current page to display the relevant tasks.
-
-  Parses the clicked page, retrieves tasks for that page, and assigns them to the socket.
-  """
+  # Handles pagination clicks, updating the current page to display the relevant tasks.
+  # Parses the clicked page, retrieves tasks for that page, and assigns them to the socket.
   def handle_event("pagination_click", %{"value" => current_page}, %{assigns: assigns} = socket) do
     current_page = String.to_integer(current_page)
 
@@ -134,5 +119,4 @@ defmodule TaskManagerWeb.TasksHandleEvents do
        current_page: current_page
      )}
   end
-
 end

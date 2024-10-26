@@ -52,7 +52,7 @@ defmodule TaskManagerWeb.DrawerComponent do
   It resets the drawer properties, clearing any assigned values such as the form
   and drawer title, and updates the `is_open` state to `false`.
   """
-  def handle_event("drawer_state_reset", _, %{assigns: %{default_form: default_form}} = socket) do
+  def handle_event("drawer_state_reset", _, socket) do
     Phoenix.LiveView.send_update(Drawer, id: "tasks_drawer", is_open: false, is_closing: false)
 
     {:noreply,
