@@ -35,7 +35,7 @@ defmodule TaskManagerWeb.PaginationComponent do
 
   def render(assigns) do
     ~F"""
-    <div class="flex items-center space-x-2 w-full">
+    <div class="flex items-center space-x-2 w-1/4">
       <span class="whitespace-nowrap text-sm">{(@current_page - 1) * 10 + min(1, @total_tasks)}-{min(@current_page * 10, @total_tasks)} of {@total_tasks}</span>
       {#case {@total_pages}}
         {#match {total_pages} when total_pages > 1}

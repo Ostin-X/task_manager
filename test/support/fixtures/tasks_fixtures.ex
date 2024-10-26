@@ -20,7 +20,6 @@ defmodule TaskManager.TasksFixtures do
         status_id: status.id
       })
       |> TaskManager.Tasks.create_task()
-      |> IO.inspect()
 
     task
   end

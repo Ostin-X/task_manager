@@ -59,8 +59,8 @@ defmodule TaskManagerWeb.TasksLive do
 
   data drawer_title, :string, default: ""
   data is_open, :boolean, default: false
-  data form, :form, default: to_form(MyTask.changeset(%MyTask{}, %{"status_id" => 1}))
-  data default_form, :form, default: to_form(MyTask.changeset(%MyTask{}, %{"status_id" => 1}))
+  data form, :form, default: to_form(MyTask.changeset(%MyTask{}))
+  data default_form, :form, default: to_form(MyTask.changeset(%MyTask{}))
 
   def mount(_params, _session, socket) do
     if connected?(socket), do: send(self(), :load_data)
@@ -77,13 +77,21 @@ defmodule TaskManagerWeb.TasksLive do
 
     {tasks_task, total_tasks_task} = Utils.get_tasks_async_tasks(assigns)
     total_tasks = Task.await(total_tasks_task)
-    status_task = Task.async(fn -> Tasks.get_status_options() end)
+    status_options = Tasks.get_status_options()
+
+    pending_value =
+      status_options
+      |> Enum.find(fn %{key: key} -> key == "pending" end)
+      |> Map.get(:value)
 
     {:noreply,
-     assign(socket,
+     assign(
+       socket,
+       form: to_form(MyTask.changeset(%MyTask{}, %{"status_id" => pending_value})),
+       default_form: to_form(MyTask.changeset(%MyTask{}, %{"status_id" => pending_value})),
        total_pages: ceil(total_tasks / on_page_limit),
        total_tasks: total_tasks,
-       status_options: Task.await(status_task),
+       status_options: status_options,
        tasks: Task.await(tasks_task),
        loading: false
      )}
@@ -212,8 +220,9 @@ defmodule TaskManagerWeb.TasksLive do
 
     <DeleteModalComponent title_message="Delete Task?" inner_message={@form.data.title} value={@form.data.id} />
 
-    <SnackbarComponent id="snackbar_updated" message={"User #{@form.data.title} was updated"} />
-    <SnackbarComponent id="snackbar_deleted" message={"User #{@form.data.title} was deleted"} />
+    <SnackbarComponent id="snackbar_created" message={"Task #{@form.data.title} was created"} />
+    <SnackbarComponent id="snackbar_updated" message={"Task #{@form.data.title} was updated"} />
+    <SnackbarComponent id="snackbar_deleted" message={"Task #{@form.data.title} was deleted"} />
     """
   end
 end

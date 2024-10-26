@@ -40,7 +40,7 @@ defmodule TaskManagerWeb.TasksFormComponent do
       class="bg-frieza-10 rounded-xl"
     >
       <Form.Field :if={@form.data.id} label="ID">
-        <Form.Input field={:id} disabled />
+        <Form.Input field={:id} readonly />
       </Form.Field>
       <Form.Field field={:title} label="Title" has_error_icon>
         <Form.Input placeholder="Please enter title" {=@disabled} />
@@ -51,16 +51,27 @@ defmodule TaskManagerWeb.TasksFormComponent do
       <Form.Field field={:status_id} label="Status">
         <Form.Dropdown options={@status_options} prompt="Please select status" {=@disabled} />
       </Form.Field>
-      <div class="p-4 flex justify-center space-x-4">
-        {#if @form.data.id}
+      {#if @form.data.id}
+        <Form.Field>
+          <Form.Input placeholder={String.split(@form.data.user.email, "@") |> Enum.at(0)} disabled />
+        </Form.Field>
+        <Form.Field>
+          <Form.Input placeholder={@form.data.inserted_at} disabled />
+        </Form.Field>
+        <Form.Field>
+          <Form.Input placeholder={@form.data.updated_at} disabled />
+        </Form.Field>
+        <div class="p-4 flex justify-center space-x-4">
           {#if !@disabled}
             <Button type="submit" class="bg-popo" disabled={@form.params == %{} || @form.errors != []}>Update</Button>
             <Button on_click="drawer_confirm_delete_modal" value={@form.data.id} class="ms-1 bg-dodoria">Delete</Button>
           {/if}
-        {#else}
+        </div>
+      {#else}
+        <div class="p-4 flex justify-center space-x-4">
           <Button type="submit" class="bg-popo" disabled={@form.params == %{} || @form.errors != []}>Create</Button>
-        {/if}
-      </div>
+        </div>
+      {/if}
     </Form>
     """
   end

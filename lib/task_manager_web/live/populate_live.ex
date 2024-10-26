@@ -22,9 +22,4 @@ defmodule TaskManagerWeb.PopulateLive do
     </div>
     """
   end
-
-  def handle_event("set_open", %{"value" => value}, socket) do
-    Drawer.open("backdrop_drawer #{value}")
-    {:noreply, socket}
-  end
 end

@@ -16,6 +16,7 @@ defmodule TaskManager.Tasks.Task do
   def changeset(task, attrs \\ %{}) do
     task
     |> cast(attrs, [:title, :description, :user_id, :status_id])
+    |> put_status_if_missing()
     |> validate_required([:title, :description, :user_id, :status_id])
     |> validate_length(:title, min: 4, max: 50)
     |> validate_length(:description, min: 4, max: 200)
@@ -23,4 +24,7 @@ defmodule TaskManager.Tasks.Task do
     |> foreign_key_constraint(:status_id)
     |> unique_constraint(:title)
   end
+
+  defp put_status_if_missing(changeset),
+    do: %{changeset | changes: Map.put_new(changeset.changes, :status_id, changeset.data.status_id)}
 end

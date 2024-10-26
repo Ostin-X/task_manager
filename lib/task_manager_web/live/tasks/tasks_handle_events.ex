@@ -110,7 +110,7 @@ defmodule TaskManagerWeb.TasksHandleEvents do
     case Tasks.delete_task(user_data) do
       {:ok, _task} ->
         DrawerComponent.handle_event("drawer_on_close", %{}, socket)
-        Modal.close("approve")
+        Modal.close("approve_delete")
         Snackbar.open("snackbar_deleted")
 
         {:noreply, socket}

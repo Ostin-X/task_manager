@@ -38,7 +38,7 @@ defmodule TaskManagerWeb.TasksTableComponent do
   prop filter_form, :form, required: true
 
   def handle_event("table_create_drawer", _, %{assigns: %{default_form: default_form}} = socket) do
-    Drawer.open("task_drawer")
+    Drawer.open("tasks_drawer")
 
     {:noreply,
      assign(socket,
@@ -51,7 +51,7 @@ defmodule TaskManagerWeb.TasksTableComponent do
   def handle_event("table_single_row_click_drawer", %{"selected" => selected}, socket) do
     task = Utils.task_from_socket(selected, socket)
 
-    Drawer.open("task_drawer")
+    Drawer.open("tasks_drawer")
 
     {
       :noreply,

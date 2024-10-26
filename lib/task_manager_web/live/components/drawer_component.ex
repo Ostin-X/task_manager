@@ -59,7 +59,6 @@ defmodule TaskManagerWeb.DrawerComponent do
      assign(socket,
        selected: [],
        is_open: false,
-       form: default_form,
        drawer_title: ""
      )}
   end
