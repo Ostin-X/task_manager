@@ -29,38 +29,34 @@ for status <- statuses do
   |> Repo.insert!()
 end
 
-# Create regular users
-users =
-  for i <- 1..10 do
-    %User{}
-    |> User.registration_changeset(%{
-      username: "user_#{i}",
-      email: "user_#{i}@example.com",
-      password: "password123"
-    })
-    |> Repo.insert!()
-  end
-
-# Add the admin user
-admin_user =
+# Create users
+users = [
   %User{}
   |> User.registration_changeset(%{username: "admin", email: "admin@admin", password: "admin"})
+  |> Repo.insert!(),
+
+  %User{}
+  |> User.registration_changeset(%{username: "admin2", email: "admin2@admin.com", password: "admin"})
+  |> Repo.insert!(),
+
+  %User{}
+  |> User.registration_changeset(%{username: "admin3", email: "admin3@admin.com", password: "admin"})
   |> Repo.insert!()
+]
 
 # Get the inserted statuses
 status_ids = Repo.all(Status) |> Enum.map(& &1.id)
 
-# Create tasks
+# Use lorem to generate random titles and descriptions for tasks
 for i <- 1..60 do
   # Assign a user and status to each task
-  # Include admin in the pool of users
-  user = Enum.random(users ++ [admin_user])
+  user = Enum.random(users)
   status = Enum.random(status_ids)
 
   %Task{}
   |> Task.changeset(%{
-    title: "Task #{i}",
-    description: "Description for Task #{i}",
+    title: Faker.Lorem.sentence() |> String.slice(0..49),  # Generates a random title
+    description: Faker.Lorem.paragraph() |> String.slice(0..199),  # Generates a random description
     # Assuming your Task schema has a user_id field
     user_id: user.id,
     # Assuming your Task schema has a status_id field
@@ -69,4 +65,4 @@ for i <- 1..60 do
   |> Repo.insert!()
 end
 
-IO.puts("Database seeded with 10 regular users, an admin user, 3 statuses, and 60 tasks.")
+IO.puts("Database seeded with 3 users, 3 statuses, and 60 tasks.")

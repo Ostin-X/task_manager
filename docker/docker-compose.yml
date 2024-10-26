@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: task_manager_dev  # Updated to task_manager_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - ../pgdata:/var/lib/postgresql/data
+
+  app:
+    image: task_manager-app
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile-local
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    environment:
+      MIX_ENV: prod
+      SECRET_KEY_BASE: "7KQ8K7bd7sjHGfddgkF3S24jZx8WPM7ndFzMS5uL48NFSRkmasdafsdgafgfdsbsthsrth"
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db
+      DB_NAME: task_manager_dev  # Updated to task_manager_dev
+      DB_PORT: "5432"
+      DB_POOL_SIZE: "15"
+      DATABASE_URL: "ecto://postgres:postgres@db/task_manager_dev"  # Add this line

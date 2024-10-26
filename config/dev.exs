@@ -30,6 +30,15 @@ config :task_manager, TaskManagerWeb.Endpoint,
     tailwind: {Tailwind, :install_and_run, [:task_manager, ~w(--watch)]}
   ]
 
+config :esbuild,
+  version: "0.17.11",
+  task_manager: [
+    args:
+      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+    cd: Path.expand("../assets", __DIR__),
+    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+  ]
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

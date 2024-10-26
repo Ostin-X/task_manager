@@ -46,12 +46,7 @@ defmodule TaskManager.MixProject do
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
       {:heroicons,
-       github: "tailwindlabs/heroicons",
-       tag: "v2.1.1",
-       sparse: "optimized",
-       app: false,
-       compile: false,
-       depth: 1},
+       github: "tailwindlabs/heroicons", tag: "v2.1.1", sparse: "optimized", app: false, compile: false, depth: 1},
       {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 1.0"},
@@ -77,11 +72,17 @@ defmodule TaskManager.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.setup": ["cmd --cd assets npm i", "esbuild.install --if-missing"],
+      "assets.setup": [
+        "cmd --cd assets npm i",
+        "cmd --cd deps/moon/assets npm i",
+        "esbuild.install --if-missing"
+      ],
       "assets.build": ["cmd --cd assets npm run build", "esbuild default"],
       "assets.deploy": [
+        "assets.setup",
+        "assets.build",
         "cmd --cd assets npm run deploy",
-        "NODE_ENV=production esbuild default --minify",
+        "esbuild default --minify",
         "phx.digest"
       ]
     ]

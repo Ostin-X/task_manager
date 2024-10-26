@@ -24,7 +24,7 @@ defmodule TaskManagerWeb.TasksFormComponent do
   """
   use Surface.Component
 
-  alias Moon.Design.{Form, Form.Field, Form.Field.ErrorTag, Form.Input, Button}
+  alias Moon.Design.{Form, Button}
 
   prop form, :changeset, required: true
   prop status_options, :list, required: true
@@ -42,11 +42,11 @@ defmodule TaskManagerWeb.TasksFormComponent do
       <Form.Field :if={@form.data.id} label="ID">
         <Form.Input field={:id} disabled />
       </Form.Field>
-      <Field field={:title} label="Title" has_error_icon>
-        <Input placeholder="Please enter title" {=@disabled} />
-      </Field>
+      <Form.Field field={:title} label="Title" has_error_icon>
+        <Form.Input placeholder="Please enter title" {=@disabled} />
+      </Form.Field>
       <Form.Field field={:description} label="Description" has_error_icon>
-        <Form.TextArea placeholder="Please enter description" {=@disabled} />
+        <Form.TextArea placeholder="Please enter description" {=@disabled} rows={10} />
       </Form.Field>
       <Form.Field field={:status_id} label="Status">
         <Form.Dropdown options={@status_options} prompt="Please select status" {=@disabled} />
