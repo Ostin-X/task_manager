@@ -22,6 +22,8 @@ defmodule TaskManagerWeb.Utils do
       iex> Task.await(total_future)
       2
   """
+  import Timex
+
   alias TaskManager.Tasks
   alias TaskManager.Tasks.Task, as: MyTask
 
@@ -71,4 +73,54 @@ defmodule TaskManagerWeb.Utils do
   @spec task_from_socket(id :: String.t(), Socket.t()) :: Task.t()
   def task_from_socket(id, %{assigns: %{tasks: tasks}}),
     do: struct(MyTask, Enum.find(tasks, &(&1.id == String.to_integer(id))))
+
+  @doc """
+  Converts a UTC datetime to local time and formats it as a string.
+
+  ## Parameters
+
+  - `datetime`: A `DateTime` struct representing a datetime in UTC.
+
+  ## Returns
+
+  - A string representing the datetime in local time formatted as "DD Mon YYYY HH:MM".
+
+  ## Example
+
+      iex> format_datetime_to_local(~U[2024-10-26 14:30:00Z])
+      "26 Oct 2024 14:30"
+  """
+  def format_datetime_to_local(datetime) do
+    datetime
+    |> Timex.to_datetime("Etc/UTC")
+    |> Timex.Timezone.convert(:local)
+    |> Timex.format!("{D} {Mshort} {YYYY} {h24}:{m}")
+  end
+
+  @doc """
+  Slices a string to a specified length and appends "..." if it exceeds that length.
+
+  ## Parameters
+
+  - `str`: The string to be sliced.
+  - `len`: The maximum length of the string.
+
+  ## Returns
+
+  - A string that is either the original string (if its length is less than or equal to `len`) or a sliced version with "..." appended.
+
+  ## Example
+
+      iex> string_slice("Hello, World!", 5)
+      "Hello..."
+
+      iex> string_slice("Hello", 10)
+      "Hello"
+  """
+  def string_slice(str, len) do
+    case String.length(str) > len do
+      true -> String.slice(str, 0, len) <> "..."
+      false -> str
+    end
+  end
 end

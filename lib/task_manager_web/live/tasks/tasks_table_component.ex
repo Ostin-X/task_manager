@@ -18,12 +18,20 @@ defmodule TaskManagerWeb.TasksTableComponent do
     Drawer
   }
 
+  prop status_colors, :map,
+    default: %{
+      "pending" => "text-krillin",
+      "in_progress" => "text-whis",
+      "completed" => "text-roshi"
+    }
+
   prop tasks, :list, required: true
   prop selected, :list, required: true
   prop sort, :keyword, required: true
   prop current_page, :integer, required: true
   prop total_tasks, :integer, required: true
   prop total_pages, :integer, required: true
+  prop current_user, :map, required: true
 
   prop status_options, :list, required: true
   prop status_selected, :integer, required: true
@@ -88,20 +96,44 @@ defmodule TaskManagerWeb.TasksTableComponent do
         row_gap="border-spacing-y-1"
         class="bg-frieza-10 w-full block md:table"
       >
-        <Column name="id" label="ID" sortable class="w-1/8">
+        <Column name="id" label="ID" sortable width="hidden 2xl:table-cell" class="w-1/8">
           {task.id}
         </Column>
-        <Column name="title" label="Title" sortable class="w-1/8">
-          {task.title}
+        <Column name="title" width="hidden sm:table-cell" label="Title" sortable class="w-1/4">
+          {Utils.string_slice(task.title, 50)}
         </Column>
-        <Column name="description" label="Description" class="w-1/2">
-          {task.description}
+        <Column name="description" width="hidden sm:table-cell" label="Description" class="w-1/2">
+          {Utils.string_slice(task.description, 100)}
         </Column>
-        <Column name="status" label="Status" class="w-1/8">
-          {task.status.name}
+        <Column name="status_name" label="Status" width="hidden sm:table-cell" class="w-1/8">
+          <span class={Map.get(@status_colors, task.status.name, "bg-gray-300")}>
+            {task.status.name}
+          </span>
         </Column>
-        <Column name="author" label="Author" class="w-1/8">
-          {hd(String.split(task.user.email, "@"))}
+        <Column name="user_email" label="User" width="hidden lg:table-cell" class="w-1/8">
+          <span class={if task.user.id == @current_user.id, do: "text-chichi-60", else: "text-default"}>
+            {hd(String.split(task.user.email, "@"))}
+          </span>
+        </Column>
+        <Column name="inserted_at" label="Created at" sortable width="hidden 2xl:table-cell" class="w-1/8">
+          {Utils.format_datetime_to_local(task.inserted_at)}
+        </Column>
+        <Column name="updated_at" label="Updated at" sortable width="hidden xl:table-cell" class="w-1/8">
+          {Utils.format_datetime_to_local(task.updated_at)}
+        </Column>
+        <Column class="table-cell sm:hidden">
+          #{task.id}: <span class="font-bold">{Utils.string_slice(task.title, 30)}</span>
+          by <span class={"font-bold " <> if task.user.id == @current_user.id, do: "text-chichi-60", else: "text-default"}>
+            {hd(String.split(task.user.email, "@"))}
+          </span>
+          <br>
+          at {Utils.format_datetime_to_local(task.updated_at)}
+          <br>
+          {Utils.string_slice(task.description, 100)}
+          <br>
+          <span class={Map.get(@status_colors, task.status.name, "bg-gray-300")}>
+            {task.status.name}
+          </span>
         </Column>
       </Table>
     </div>

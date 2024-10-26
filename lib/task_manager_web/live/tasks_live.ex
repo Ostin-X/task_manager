@@ -200,6 +200,7 @@ defmodule TaskManagerWeb.TasksLive do
         {=@status_options}
         {=@status_selected}
         {=@filter_form}
+        {=@current_user}
       />
     {/if}
 
