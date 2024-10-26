@@ -67,11 +67,8 @@ defmodule TaskManagerWeb.TasksLive do
     {:ok, socket}
   end
 
-  @doc """
-  Handles the loading of data when the `:load_data` message is received, when WebSockets are connected.
-
-  This includes subscribing to task updates and fetching tasks and status options asynchronously.
-  """
+  # Handles the loading of data when the `:load_data` message is received, when WebSockets are connected.
+  # This includes subscribing to task updates and fetching tasks and status options asynchronously.
   def handle_info(:load_data, %{assigns: %{on_page_limit: on_page_limit} = assigns} = socket) do
     Tasks.subscribe()
 
@@ -97,20 +94,13 @@ defmodule TaskManagerWeb.TasksLive do
      )}
   end
 
-  @doc """
-  Handles task deletion notifications from the `Tasks` module.
-
-  Updates the total task count, recalculates the total pages, and ensures the current page is valid.
-
-  ## Parameters
-
-    - `{Tasks, [:task, :deleted], _}`: The message indicating a task has been deleted.
-    - `socket`: The socket containing the current state.
-
-  ## Returns
-
-  An updated socket reflecting the changes after task deletion.
-  """
+  # Handles task deletion notifications from the `Tasks` module.
+  # Updates the total task count, recalculates the total pages, and ensures the current page is valid.
+  # ## Parameters
+  #  - `{Tasks, [:task, :deleted], _}`: The message indicating a task has been deleted.
+  #  - `socket`: The socket containing the current state.
+  # ## Returns
+  # An updated socket reflecting the changes after task deletion.
   def handle_info(
         {Tasks, [:task, :deleted], _},
         %{assigns: %{current_page: current_page, on_page_limit: on_page_limit} = assigns} = socket
@@ -124,18 +114,12 @@ defmodule TaskManagerWeb.TasksLive do
     {:noreply, assign(socket, tasks: Tasks.get_tasks(new_socket.assigns))}
   end
 
-  @doc """
-  Handles updates to tasks when a message from the `Tasks` module is received after task creation or update.
-
-  ## Parameters
-
-    - `{Tasks, _, _}`: The message indicating some task-related update.
-    - `socket`: The socket containing the current state.
-
-  ## Returns
-
-  An updated socket reflecting the changes after task updates.
-  """
+  # Handles updates to tasks when a message from the `Tasks` module is received after task creation or update.
+  # ## Parameters
+  #  - `{Tasks, _, _}`: The message indicating some task-related update.
+  #  - `socket`: The socket containing the current state.
+  # ## Returns
+  # An updated socket reflecting the changes after task updates.
   def handle_info(
         {Tasks, _, _},
         %{assigns: %{on_page_limit: on_page_limit} = assigns} = socket
@@ -151,11 +135,8 @@ defmodule TaskManagerWeb.TasksLive do
      )}
   end
 
-  @doc """
-  Resets the state of the drawer component.
-
-  The updated socket after resetting the drawer state.
-  """
+  #Resets the state of the drawer component.
+  #The updated socket after resetting the drawer state.
   def handle_info(:drawer_state_reset, socket),
     do: DrawerComponent.handle_event("drawer_state_reset", %{}, socket)
 

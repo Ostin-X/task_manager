@@ -32,43 +32,34 @@ defmodule TaskManagerWeb.DrawerComponent do
 
   slot inside_form
 
-  @doc """
-  Event handler for closing the drawer.
-
-  This function handles the `"drawer_on_close"` event, which is triggered when
-  the drawer close button is clicked. The drawer closes and a message to reset
-  its state is sent with a 300 ms delay.
-  """
+  # Event handler for closing the drawer.
+  # This function handles the `"drawer_on_close"` event, which is triggered when
+  # the drawer close button is clicked. The drawer closes and a message to reset
+  # its state is sent with a 300 ms delay.
   def handle_event("drawer_on_close", _, socket) do
     Drawer.close("tasks_drawer")
     Process.send_after(self(), :drawer_state_reset, 300)
     {:noreply, socket}
   end
 
-  @doc """
-  Resets the drawer's state after closing.
-
-  This function is called when the `:drawer_state_reset` message is received.
-  It resets the drawer properties, clearing any assigned values such as the form
-  and drawer title, and updates the `is_open` state to `false`.
-  """
+  # Resets the drawer's state after closing.
+  # This function is called when the `:drawer_state_reset` message is received.
+  # It resets the drawer properties, clearing any assigned values such as the form
+  # and drawer title, and updates the `is_open` state to `false`.
   def handle_event("drawer_state_reset", _, socket) do
     Phoenix.LiveView.send_update(Drawer, id: "tasks_drawer", is_open: false, is_closing: false)
 
     {:noreply,
-     assign(socket,
-       selected: [],
-       is_open: false,
-       drawer_title: ""
-     )}
+      assign(socket,
+        selected: [],
+        is_open: false,
+        drawer_title: ""
+      )}
   end
 
-  @doc """
-  Opens a confirmation modal upon delete action.
-
-  This function handles the `"drawer_confirm_delete_modal"` event, which closes the drawer
-  and opens a delete confirmation modal (with ID `"approve_delete"`).
-  """
+  # Opens a confirmation modal upon delete action.
+  # This function handles the `"drawer_confirm_delete_modal"` event, which closes the drawer
+  # and opens a delete confirmation modal (with ID `"approve_delete"`).
   def handle_event("drawer_confirm_delete_modal", _, socket) do
     Phoenix.LiveView.send_update(Drawer, id: "tasks_drawer", is_open: false)
     Modal.open("approve_delete")
