@@ -2,11 +2,13 @@ defmodule TaskManagerWeb.GlobalSetup do
   @moduledoc """
   Script for online DB population
   """
+  alias TaskManager.Repo
+  alias TaskManager.Tasks.{Status, Task}
+  alias TaskManager.Accounts.User
+
   def run do
-    alias TaskManager.Repo
-    alias TaskManager.Tasks.{Status, Task}
-    # Make sure this alias matches your User context
-    alias TaskManager.Accounts.User
+    migrate()
+    delete_all_records()
 
     # Define statuses
     statuses = [
@@ -40,24 +42,29 @@ defmodule TaskManagerWeb.GlobalSetup do
 
     # Use lorem to generate random titles and descriptions for tasks
     for i <- 1..31 do
-      # Assign a user and status to each task
       user = Enum.random(users)
       status = Enum.random(status_ids)
 
       %Task{}
       |> Task.changeset(%{
-        # Generates a random title
         title: Faker.Lorem.sentence() |> String.slice(0..49),
-        # Generates a random description
         description: Faker.Lorem.paragraph() |> String.slice(0..199),
-        # Assuming your Task schema has a user_id field
         user_id: user.id,
-        # Assuming your Task schema has a status_id field
         status_id: status
       })
       |> Repo.insert!()
     end
 
     IO.puts("Database seeded with 3 users, 3 statuses, and 60 tasks.")
+  end
+
+  defp migrate do
+    Ecto.Migrator.run(Repo, :up, all: true)
+  end
+
+  defp delete_all_records do
+    Repo.delete_all(Task)
+    Repo.delete_all(Status)
+    Repo.delete_all(User)
   end
 end
