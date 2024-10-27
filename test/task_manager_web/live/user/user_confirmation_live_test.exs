@@ -4,8 +4,8 @@ defmodule TaskManagerWeb.UserConfirmationLiveTest do
   import Phoenix.LiveViewTest
   import TaskManager.AccountsFixtures
 
-  alias TaskManager.Accounts
-  alias TaskManager.Repo
+#  alias TaskManager.Accounts
+#  alias TaskManager.Repo
 
   setup do
     %{user: user_fixture()}
