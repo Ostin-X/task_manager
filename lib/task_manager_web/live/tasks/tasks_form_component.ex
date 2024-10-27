@@ -26,9 +26,12 @@ defmodule TaskManagerWeb.TasksFormComponent do
 
   alias Moon.Design.{Form, Button}
 
+  alias TaskManagerWeb.Utils
+
   prop form, :changeset, required: true
   prop status_options, :list, required: true
   prop disabled, :integer, required: true
+  prop viewer_counts, :map, default: %{}
 
   def render(assigns) do
     ~F"""
@@ -39,6 +42,9 @@ defmodule TaskManagerWeb.TasksFormComponent do
       submit={if @form.data.id, do: "update", else: "create"}
       class="bg-frieza-10 rounded-xl"
     >
+      <div class="ml-2 text-sm">
+        {Utils.viewers_text(Map.get(@viewer_counts, @form.data.id, 0))}
+      </div>
       <Form.Field :if={@form.data.id} label="ID">
         <Form.Input field={:id} readonly />
       </Form.Field>

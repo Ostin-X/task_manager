@@ -61,6 +61,7 @@ defmodule TaskManagerWeb.TasksLive do
   data is_open, :boolean, default: false
   data form, :form, default: to_form(MyTask.changeset(%MyTask{}))
   data default_form, :form, default: to_form(MyTask.changeset(%MyTask{}))
+  data viewer_counts, :map, default: %{}
 
   def mount(_params, _session, socket) do
     if connected?(socket), do: send(self(), :load_data)
@@ -92,6 +93,15 @@ defmodule TaskManagerWeb.TasksLive do
        tasks: Task.await(tasks_task),
        loading: false
      )}
+  end
+
+  # Handles updates to the presence state for a specific topic when a presence event occurs.
+  # When a user joins or leaves a task, this function is triggered to update the count of active viewers for that task.
+  def handle_info(%{event: "presence_diff", topic: topic}, socket) do
+    task_id = String.replace_prefix(topic, "task:", "") |> String.to_integer()
+    viewers = TaskManagerWeb.Presence.list(topic) |> map_size()
+    viewer_counts = Map.put(socket.assigns.viewer_counts || %{}, task_id, viewers)
+    {:noreply, assign(socket, viewer_counts: viewer_counts)}
   end
 
   # Handles task deletion notifications from the `Tasks` module.
@@ -135,8 +145,8 @@ defmodule TaskManagerWeb.TasksLive do
      )}
   end
 
-  #Resets the state of the drawer component.
-  #The updated socket after resetting the drawer state.
+  # Resets the state of the drawer component.
+  # The updated socket after resetting the drawer state.
   def handle_info(:drawer_state_reset, socket),
     do: DrawerComponent.handle_event("drawer_state_reset", %{}, socket)
 
@@ -195,7 +205,12 @@ defmodule TaskManagerWeb.TasksLive do
 
     <DrawerComponent id="tasks_drawer" {=@drawer_title} {=@is_open}>
       <:inside_form>
-        <TasksFormComponent {=@form} {=@status_options} disabled={@form.data.id && @form.data.user_id != @current_user.id} />
+        <TasksFormComponent
+          {=@form}
+          {=@status_options}
+          {=@viewer_counts}
+          disabled={@form.data.id && @form.data.user_id != @current_user.id}
+        />
       </:inside_form>
     </DrawerComponent>
 

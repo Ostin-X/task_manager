@@ -36,7 +36,9 @@ defmodule TaskManagerWeb.DrawerComponent do
   # This function handles the `"drawer_on_close"` event, which is triggered when
   # the drawer close button is clicked. The drawer closes and a message to reset
   # its state is sent with a 300 ms delay.
-  def handle_event("drawer_on_close", _, socket) do
+  def handle_event("drawer_on_close", _, %{assigns: %{selected: [selected]}} = socket) do
+    TaskManagerWeb.Presence.untrack(self(), "task:#{selected}", socket.id)
+
     Drawer.close("tasks_drawer")
     Process.send_after(self(), :drawer_state_reset, 300)
     {:noreply, socket}
@@ -50,11 +52,11 @@ defmodule TaskManagerWeb.DrawerComponent do
     Phoenix.LiveView.send_update(Drawer, id: "tasks_drawer", is_open: false, is_closing: false)
 
     {:noreply,
-      assign(socket,
-        selected: [],
-        is_open: false,
-        drawer_title: ""
-      )}
+     assign(socket,
+       selected: [],
+       is_open: false,
+       drawer_title: ""
+     )}
   end
 
   # Opens a confirmation modal upon delete action.

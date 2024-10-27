@@ -1,5 +1,25 @@
 defmodule TaskManagerWeb.TasksTableComponent do
-  @moduledoc false
+  @moduledoc """
+  A Surface component that displays a table of tasks with functionality for filtering,
+  sorting, and displaying task details in a drawer.
+
+  This component is responsible for rendering the task table, handling user interactions
+  for task creation and selection, and managing pagination. It utilizes other components
+  such as `PaginationComponent` and `TasksFilterComponent` to enhance user experience.
+
+  ## Properties
+  - `status_colors`: A map for status color classes.
+  - `tasks`: A list of tasks to display, required.
+  - `selected`: A list with selected task to highlight in table, required.
+  - `sort`: A keyword list for sorting configuration, required.
+  - `current_page`: The current page number, required.
+  - `total_tasks`: Total number of tasks available, required.
+  - `total_pages`: Total number of pages available, required.
+  - `current_user`: The current user’s information, required.
+  - `status_options`: List of status options for filtering, required.
+  - `status_selected`: The currently selected status filter, required.
+  - `filter_form`: The form used for filtering tasks, required.
+  """
   use Surface.Component
 
   alias TaskManagerWeb.{
@@ -37,6 +57,9 @@ defmodule TaskManagerWeb.TasksTableComponent do
   prop status_selected, :integer, required: true
   prop filter_form, :form, required: true
 
+  # Handles the event to open the drawer for creating a new task.
+  # This event is triggered when the user clicks the 'Add New Task' button.
+  # It assigns the title and default form to the socket, opens the drawer and prepares the UI for task creation.
   def handle_event("table_create_drawer", _, %{assigns: %{default_form: default_form}} = socket) do
     Drawer.open("tasks_drawer")
 
@@ -48,8 +71,16 @@ defmodule TaskManagerWeb.TasksTableComponent do
      )}
   end
 
+  # Handles the event when a single row in the task table is clicked.
+  # This event opens a drawer displaying detailed information about the selected task 
+  # and tracks the user's presence on the associated topic for that task.
   def handle_event("table_single_row_click_drawer", %{"selected" => selected}, socket) do
     task = Utils.task_from_socket(selected, socket)
+    topic = "task:#{task.id}"
+
+    TaskManagerWeb.Endpoint.subscribe(topic)
+    #    Phoenix.PubSub.subscribe(TaskManager.PubSub, topic)
+    TaskManagerWeb.Presence.track(self(), topic, socket.id, %{})
 
     Drawer.open("tasks_drawer")
 
@@ -64,6 +95,8 @@ defmodule TaskManagerWeb.TasksTableComponent do
     }
   end
 
+  # Handles sorting of tasks when the sorting header is clicked.
+  # This event updates the sort order and retrieves the sorted tasks to be displayed.
   def handle_event(
         "table_sorting_click",
         %{"sort-dir" => sort_dir, "sort-key" => sort_key},

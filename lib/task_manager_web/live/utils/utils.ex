@@ -121,4 +121,15 @@ defmodule TaskManagerWeb.Utils do
       false -> str
     end
   end
+
+  @doc """
+  Returns a formatted string indicating the number of viewers for a task.
+
+  This function takes an integer `count` representing the number of viewers
+  and returns a corresponding message based on the viewer count
+  """
+  def viewers_text(0), do: "!!!ALARMA, El error en la cuenta de visualizadores!!!"
+  def viewers_text(1), do: "only You are looking at this task"
+  def viewers_text(2), do: "You and 1 other person are looking at this task"
+  def viewers_text(count), do: "You and #{count - 1} other people are looking at this task"
 end
