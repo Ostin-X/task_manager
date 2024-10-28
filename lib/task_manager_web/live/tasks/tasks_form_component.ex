@@ -58,13 +58,13 @@ defmodule TaskManagerWeb.TasksFormComponent do
         <Form.Dropdown options={@status_options} prompt="Please select status" {=@disabled} />
       </Form.Field>
       {#if @form.data.id}
-        <Form.Field>
+        <Form.Field field={:user_id}>
           <Form.Input placeholder={String.split(@form.data.user.email, "@") |> Enum.at(0)} disabled />
         </Form.Field>
-        <Form.Field>
+        <Form.Field field={:inserted_at}>
           <Form.Input placeholder={@form.data.inserted_at} disabled />
         </Form.Field>
-        <Form.Field>
+        <Form.Field field={:updated_at}>
           <Form.Input placeholder={@form.data.updated_at} disabled />
         </Form.Field>
         <div class="p-4 flex justify-center space-x-4">

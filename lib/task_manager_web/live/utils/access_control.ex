@@ -1,6 +1,5 @@
 defmodule TaskManagerWeb.Plugs.AccessControl do
   import Plug.Conn
-  # Import this to access redirect/2 and put_flash/3
   import Phoenix.Controller
 
   def init(default), do: default

@@ -12,7 +12,7 @@ defmodule TaskManagerWeb.PopulateLive do
   def render(assigns) do
     ~F"""
     <div class="relative w-full">
-      <Button animation="pulse" on_click="populate">Pulse</Button>
+      <Button animation="pulse" on_click="populate">!!!Populate DB!!!</Button>
     </div>
     """
   end

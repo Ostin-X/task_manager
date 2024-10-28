@@ -32,7 +32,7 @@ end
 # Create users
 users = [
   %User{}
-  |> User.registration_changeset(%{username: "admin", email: "admin@admin", password: "admin"})
+  |> User.registration_changeset(%{username: "admin", email: "admin@admin.com", password: "admin"})
   |> Repo.insert!(),
 
   %User{}

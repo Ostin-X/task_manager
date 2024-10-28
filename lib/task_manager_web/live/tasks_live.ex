@@ -203,16 +203,18 @@ defmodule TaskManagerWeb.TasksLive do
       />
     {/if}
 
-    <DrawerComponent id="tasks_drawer" {=@drawer_title} {=@is_open}>
-      <:inside_form>
-        <TasksFormComponent
-          {=@form}
-          {=@status_options}
-          {=@viewer_counts}
-          disabled={@form.data.id && @form.data.user_id != @current_user.id}
-        />
-      </:inside_form>
-    </DrawerComponent>
+    {#if @is_open}
+      <DrawerComponent id="tasks_drawer" {=@drawer_title} {=@is_open}>
+        <:inside_form>
+          <TasksFormComponent
+            {=@form}
+            {=@status_options}
+            {=@viewer_counts}
+            disabled={@form.data.id && @form.data.user_id != @current_user.id}
+          />
+        </:inside_form>
+      </DrawerComponent>
+    {/if}
 
     <DeleteModalComponent title_message="Delete Task?" inner_message={@form.data.title} value={@form.data.id} />
 

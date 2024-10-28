@@ -36,7 +36,7 @@ defmodule TaskManagerWeb.DrawerComponent do
   # This function handles the `"drawer_on_close"` event, which is triggered when
   # the drawer close button is clicked. The drawer closes and a message to reset
   # its state is sent with a 300 ms delay.
-  def handle_event("drawer_on_close", _, %{assigns: %{selected: [selected]}} = socket) do
+  def handle_event("drawer_on_close", _, socket) do
     Drawer.close("tasks_drawer")
     Process.send_after(self(), :drawer_state_reset, 300)
     {:noreply, socket}
