@@ -79,7 +79,7 @@ defmodule TaskManagerWeb.TasksTableComponent do
     topic = "task:#{task.id}"
 
     TaskManagerWeb.Endpoint.subscribe(topic)
-    #    Phoenix.PubSub.subscribe(TaskManager.PubSub, topic)
+#        Phoenix.PubSub.subscribe(TaskManager.PubSub, topic)
     TaskManagerWeb.Presence.track(self(), topic, socket.id, %{})
 
     Drawer.open("tasks_drawer")

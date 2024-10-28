@@ -14,7 +14,7 @@ defmodule TaskManagerWeb.TasksHandleEvents do
   """
   use Surface.Component
 
-  alias Moon.Design.{Snackbar, Modal}
+  alias Moon.Design.{Snackbar, Modal, Drawer}
   alias TaskManager.Tasks
   alias TaskManager.Tasks.Task, as: MyTask
   alias TaskManagerWeb.DrawerComponent
@@ -50,7 +50,8 @@ defmodule TaskManagerWeb.TasksHandleEvents do
 
     case Tasks.create_task(params) do
       {:ok, _task} ->
-        DrawerComponent.handle_event("drawer_on_close", %{}, socket)
+        #        DrawerComponent.handle_event("drawer_on_close", %{}, socket)
+        Drawer.close("tasks_drawer")
         Snackbar.open("snackbar_created")
 
         {:noreply, assign(socket, form: form)}
@@ -97,7 +98,7 @@ defmodule TaskManagerWeb.TasksHandleEvents do
       ) do
     case Tasks.delete_task(user_data) do
       {:ok, _task} ->
-        DrawerComponent.handle_event("drawer_on_close", %{}, socket)
+#        DrawerComponent.handle_event("drawer_on_close", %{}, socket)
         Modal.close("approve_delete")
         Snackbar.open("snackbar_deleted")
 

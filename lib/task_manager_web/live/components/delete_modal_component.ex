@@ -31,7 +31,7 @@ defmodule TaskManagerWeb.DeleteModalComponent do
 
   def handle_event("modal_approve_set_close", _, socket) do
     Modal.close("approve_delete")
-    {:noreply, assign(socket, selected: [])}
+    {:noreply, socket}
   end
 
   def render(assigns) do

@@ -42,7 +42,7 @@ defmodule TaskManagerWeb.TasksFormComponent do
       submit={if @form.data.id, do: "update", else: "create"}
       class="bg-frieza-10 rounded-xl"
     >
-      <div class="ml-2 text-sm">
+      <div class="ml-2 text-sm" :if={@form.data.id}>
         {Utils.viewers_text(Map.get(@viewer_counts, @form.data.id, 0))}
       </div>
       <Form.Field :if={@form.data.id} label="ID">
@@ -58,7 +58,7 @@ defmodule TaskManagerWeb.TasksFormComponent do
         <Form.Dropdown options={@status_options} prompt="Please select status" {=@disabled} />
       </Form.Field>
       {#if @form.data.id}
-        <Form.Field field={:user_id}>
+        <Form.Field field={:user_email}>
           <Form.Input placeholder={String.split(@form.data.user.email, "@") |> Enum.at(0)} disabled />
         </Form.Field>
         <Form.Field field={:inserted_at}>

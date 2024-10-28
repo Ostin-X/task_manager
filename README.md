@@ -44,6 +44,9 @@ Explore the app in action without setup:
     mix setup
    ```
 
+   - If Moon shows a slots error, just run mix setup again.
+
+
 3. Start the server:
    ```bash
    mix phx.server
