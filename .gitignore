@@ -36,10 +36,10 @@ npm-debug.log
 node_modules/
 
 # Ignore generated js hook files for components
-**/assets/js/_hooks/
+assets/js/_hooks/
 
 # Ignore generated CSS file for components
-**/assets/css/_components.css
+assets/css/_components.css
 
 mix.lock
 package-lock.json
@@ -52,15 +52,3 @@ package-lock.json
 *.iml
 
 pgdata
-
-favicon.ico
-README.md
-Kuznietsov/projects/my_super_app/.dockerignore
-Kuznietsov/projects/my_super_app/Dockerfile
-Kuznietsov/projects/my_super_app/fly.toml
-Kuznietsov/projects/my_super_app/lib/my_super_app/release.ex
-Kuznietsov/projects/my_super_app/rel/env.sh.eex
-Kuznietsov/projects/my_super_app/rel/overlays/bin/migrate
-Kuznietsov/projects/my_super_app/rel/overlays/bin/migrate.bat
-Kuznietsov/projects/my_super_app/rel/overlays/bin/server
-Kuznietsov/projects/my_super_app/rel/overlays/bin/server.bat

@@ -7,6 +7,26 @@
 # General application configuration
 import Config
 
+defmodule ConfigHelper do
+  @moduledoc """
+  Helper for importing config files
+  """
+  @doc """
+    Imports config file if it exists
+  """
+  def import_if_exists(config_path) do
+    full_path =
+      File.cwd!()
+      |> Path.join(config_path)
+
+    if File.exists?(full_path) do
+      import_config(full_path)
+    else
+      IO.warn("Config file #{config_path} does not exist. Skipping import.")
+    end
+  end
+end
+
 config :task_manager,
   ecto_repos: [TaskManager.Repo],
   generators: [timestamp_type: :utc_datetime]
@@ -31,15 +51,24 @@ config :task_manager, TaskManagerWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :task_manager, TaskManager.Mailer, adapter: Swoosh.Adapters.Local
 
+ConfigHelper.import_if_exists("/deps/moon/config/surface.exs")
+
+config :surface, :components, [
+  {Moon.Design.Tooltip.Content, propagate_context_to_slots: true},
+  {Moon.Parts.Chart.Field, propagate_context_to_slots: true},
+  {Moon.Parts.Header, propagate_context_to_slots: true},
+  {TaskManagerWeb.DrawerComponent, propagate_context_to_slots: true}
+]
+
 # Configure esbuild (the version is required)
-config :esbuild,
-  version: "0.17.11",
-  task_manager: [
-    args:
-      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
-    cd: Path.expand("../assets", __DIR__),
-    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
-  ]
+# config :esbuild,
+#  version: "0.17.11",
+#  task_manager: [
+#    args:
+#      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+#    cd: Path.expand("../assets", __DIR__),
+#    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+#  ]
 
 # Configure tailwind (the version is required)
 config :tailwind,

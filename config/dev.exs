@@ -2,12 +2,13 @@ import Config
 
 # Configure your database
 config :task_manager, TaskManager.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "task_manager_dev",
+  username: System.get_env("DB_USERNAME") || "postgres",
+  password: System.get_env("DB_PASSWORD") || "postgres",
+  hostname: System.get_env("DB_HOST") || "localhost",
+  database: System.get_env("DB_NAME") || "task_manager_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
+  port: String.to_integer(System.get_env("DB_PORT") || "5433"),
   pool_size: 10
 
 # For development, we disable any cache and enable
@@ -19,7 +20,7 @@ config :task_manager, TaskManager.Repo,
 config :task_manager, TaskManagerWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: 4000],
+  http: [ip: {0, 0, 0, 0}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
@@ -27,6 +28,15 @@ config :task_manager, TaskManagerWeb.Endpoint,
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:task_manager, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:task_manager, ~w(--watch)]}
+  ]
+
+config :esbuild,
+  version: "0.17.11",
+  task_manager: [
+    args:
+      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+    cd: Path.expand("../assets", __DIR__),
+    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
 # ## SSL Support
@@ -54,11 +64,12 @@ config :task_manager, TaskManagerWeb.Endpoint,
 
 # Watch static and templates for browser reloading.
 config :task_manager, TaskManagerWeb.Endpoint,
+  reloadable_compilers: [:gettext, :elixir, :app, :surface],
   live_reload: [
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/task_manager_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/task_manager_web/(controllers|live|components)/.*(ex|heex|sface|js)$"
     ]
   ]
 
