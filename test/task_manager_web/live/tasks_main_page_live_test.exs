@@ -89,7 +89,7 @@ defmodule TaskManagerWeb.TasksMainPageLiveTest do
       refute render(view) =~ "Task Information"
       assert render(view) =~ "Tasks"
       assert render(view) =~ "testKey"
-      assert render(view) =~ "Task some title 1 was updated"
+      assert render(view) =~ "Task testKey was updated"
     end
 
     test "create task event", %{conn: conn} do

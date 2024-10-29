@@ -13,7 +13,7 @@ config :task_manager, TaskManager.Repo,
   password: "postgres",
   hostname: "localhost",
   database: "task_manager_test#{System.get_env("MIX_TEST_PARTITION")}",
-  port: 5434,
+  port: 5432,
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2
 
