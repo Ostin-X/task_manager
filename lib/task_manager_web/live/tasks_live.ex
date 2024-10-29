@@ -218,7 +218,7 @@ defmodule TaskManagerWeb.TasksLive do
 
     <DeleteModalComponent title_message="Delete Task?" inner_message={@form.data.title} value={@form.data.id} />
 
-    <SnackbarComponent id="snackbar_created" message={"Task #{@form.data.title} was created"} />
+    <SnackbarComponent id="snackbar_created" message={"Task #{Map.get(@form.source.changes, :title)} was created"} />
     <SnackbarComponent id="snackbar_updated" message={"Task #{@form.data.title} was updated"} />
     <SnackbarComponent id="snackbar_deleted" message={"Task #{@form.data.title} was deleted"} />
     """

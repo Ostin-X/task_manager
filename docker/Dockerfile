@@ -9,5 +9,7 @@ RUN mix archive.install hex phx_new --force
 WORKDIR /app
 COPY ../. /app
 
+RUN chmod +x ./docker/run.sh
+
 EXPOSE 4000
 CMD ["./docker/run.sh"]

@@ -44,17 +44,16 @@ defmodule TaskManagerWeb.TasksHandleEvents do
   def handle_event(
         "create",
         _,
-        %{assigns: %{form: %{params: params}, current_user: %{id: user_id}, default_form: form}} = socket
+        %{assigns: %{form: %{params: params}, current_user: %{id: user_id}}} = socket
       ) do
     params = Map.put_new(params, "user_id", user_id)
 
     case Tasks.create_task(params) do
       {:ok, _task} ->
-        #        DrawerComponent.handle_event("drawer_on_close", %{}, socket)
         Drawer.close("tasks_drawer")
         Snackbar.open("snackbar_created")
 
-        {:noreply, assign(socket, form: form)}
+        {:noreply, socket}
 
       {:error, changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
@@ -72,14 +71,14 @@ defmodule TaskManagerWeb.TasksHandleEvents do
   def handle_event(
         "update",
         _,
-        %{assigns: %{form: %{data: task_data, params: params}, default_form: form}} = socket
+        %{assigns: %{form: %{data: task_data, params: params}}} = socket
       ) do
     case params != %{} && Tasks.update_task(task_data, params) do
       {:ok, _task} ->
         DrawerComponent.handle_event("drawer_on_close", %{}, socket)
         Snackbar.open("snackbar_updated")
 
-        {:noreply, assign(socket, form: form)}
+        {:noreply, socket}
 
       {:error, changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
@@ -98,7 +97,7 @@ defmodule TaskManagerWeb.TasksHandleEvents do
       ) do
     case Tasks.delete_task(user_data) do
       {:ok, _task} ->
-#        DrawerComponent.handle_event("drawer_on_close", %{}, socket)
+        DrawerComponent.handle_event("drawer_on_close", %{}, socket)
         Modal.close("approve_delete")
         Snackbar.open("snackbar_deleted")
 
