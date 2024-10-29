@@ -1,3 +1,4 @@
+version: '3.2'
 services:
   db:
     image: postgres:17
@@ -7,25 +8,21 @@ services:
       POSTGRES_DB: task_manager_dev
     ports:
       - "5433:5432"
-#    volumes:
-#      - ../pgdata:/var/lib/postgresql/data
-
-  app:
-    image: task_manager-app
+  web:
     build:
       context: ..
-      dockerfile: ./docker/Dockerfile-local
+      dockerfile: ./docker/Dockerfile
+    env_file:
+      - .env
     ports:
       - "4000:4000"
     depends_on:
       - db
     environment:
-      MIX_ENV: prod
+      MIX_ENV: dev
       SECRET_KEY_BASE: "7KQ8K7bd7sjHGfddgkF3S24jZx8WPM7ndFzMS5uL48NFSRkmasdafsdgafgfdsbsthsrth"
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       DB_HOST: db
       DB_NAME: task_manager_dev
       DB_PORT: "5432"
-      DB_POOL_SIZE: "15"
-      DATABASE_URL: "ecto://postgres:postgres@db/task_manager_dev"

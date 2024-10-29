@@ -16,14 +16,14 @@ Explore the app in action without setup:
 
 1. Clone the project:
     ```bash
-    git clone -b dev https://github.com/Ostin-X/task_manager.git
+    git clone https://github.com/Ostin-X/task_manager.git
     ```
 2. Go to the project directory:
     ```bash
     cd task_manager
     ```
    
-### Option 2a: Using Docker Compose (~~Recommended~~) Buggy
+### Option 2a: Using Docker Compose (Recommended)
 
 1. Start the application:
    ```bash
@@ -39,13 +39,12 @@ Explore the app in action without setup:
    docker-compose up -d
    ```
 
-2. Get deps and setup the application with db setup:
+2. Get deps and set up the application with db setup:
     ```bash
     mix setup
    ```
 
    - If Moon shows a slots error, just run mix setup again.
-
 
 3. Start the server:
    ```bash

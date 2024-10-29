@@ -1,85 +1,153 @@
 defmodule TaskManagerWeb.TasksMainPageLiveTest do
   use TaskManagerWeb.ConnCase, async: true
 
-  alias TaskManager.Accounts
-  alias TaskManager.Tasks
   import Phoenix.LiveViewTest
-  import TaskManager.AccountsFixtures
   import TaskManager.TasksFixtures
 
+  @table_id "tasks_table"
+  @form_id "form"
+
+  describe "Tasks redirect when not logged in" do
+    setup [:setup_database]
+
+    test "redirects if user is not logged in", %{conn: conn} do
+      assert {:error, redirect} = live(conn, ~p"/")
+      assert {:redirect, %{to: path, flash: flash}} = redirect
+      assert path == ~p"/users/log_in"
+      assert %{"error" => "You must log in to access this page."} = flash
+    end
+  end
+
   describe "Tasks page" do
-    setup %{conn: conn} do
-      user1 = user_fixture()
-      user2 = user_fixture()
-      users = [user1, user2]
+    setup [:setup_database, :login_user1]
 
-      status1 = status_fixture()
-      status2 = status_fixture()
-      statuses = [status1, status2]
-
+    defp login_user1(%{conn: conn, user1: user1} = context) do
       conn = log_in_user(conn, user1)
+      {:ok, Map.put(context, :conn, conn)}
+    end
 
-      # Create sample tasks for testing
-      create_tasks_fixture(%{users: users, statuses: statuses, number: 30})
+    test "renders basic HTML", %{conn: conn, user1: user1} do
+      {:ok, _view, html} = live(conn, ~p"/")
 
-      %{conn: conn, user1: user1, user2: user2, status1: status1, status2: status2}
+      assert html =~ user1.email
+      assert html =~ "Delete Task"
+      refute html =~ "Tasks"
     end
 
     test "renders tasks page", %{conn: conn} do
-      {:ok, _lv, html} = live(conn, ~p"/tasks")
+      {:ok, view, _html} = live(conn, ~p"/")
 
-      assert html =~ "Your Tasks"
-      assert html =~ "Create Task"
+      assert has_element?(view, "table")
+
+      rendered_html = render(view)
+      assert rendered_html =~ "Tasks"
+      assert rendered_html =~ "some title 1"
+      assert rendered_html =~ "some title 10"
+      refute rendered_html =~ "some title 11"
     end
 
-    #    test "displays tasks paginated (10 per page)", %{conn: conn} do
-    #      {:ok, lv, _html} = live(conn, ~p"/tasks")
-    #
-    #      # Assert that the first page shows 10 tasks
-    #      assert length(lv.assigns.tasks) == 10
-    #
-    #      # Assert that pagination links exist
-    #      assert html =~ "Next"
-    #      assert html =~ "Previous"
-    #    end
-    #
-    #    test "navigates to the next page", %{conn: conn} do
-    #      {:ok, lv, _html} = live(conn, ~p"/tasks")
-    #
-    #      # Click the next page button
-    #      lv
-    #      |> element("a[phx-click=\"next\"]")
-    #      |> render_click()
-    #
-    #      # Assert that we are now on the second page
-    #      assert length(lv.assigns.tasks) == 10
-    #      # Optionally, you can check if tasks have changed
-    #    end
-    #
-    #    test "navigates to the previous page", %{conn: conn} do
-    #      {:ok, lv, _html} = live(conn, ~p"/tasks")
-    #
-    #      # Go to the next page first
-    #      lv
-    #      |> element("a[phx-click=\"next\"]")
-    #      |> render_click()
-    #
-    #      # Click the previous page button
-    #      lv
-    #      |> element("a[phx-click=\"previous\"]")
-    #      |> render_click()
-    #
-    #      # Assert that we are back on the first page
-    #      assert length(lv.assigns.tasks) == 10
-    #    end
-    #
-    #    test "redirects if user is not logged in", %{conn: conn} do
-    #      conn = build_conn()
-    #      assert {:error, redirect} = live(conn, ~p"/tasks")
-    #
-    #      assert {:redirect, %{to: path, flash: flash}} = redirect
-    #      assert path == ~p"/users/log_in"
-    #      assert %{"error" => "You must log in to access this page."} = flash
-    #    end
+    test "navigates to the next page", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/")
+
+      view
+      |> element("button[phx-click=\"pagination_click\"][value=\"2\"].text-bulma")
+      |> render_click()
+
+      assert render(view) =~ "11-20"
+
+      view
+      |> element("button[phx-click=\"pagination_click\"][value=\"1\"].text-bulma")
+      |> render_click()
+
+      assert render(view) =~ "1-10"
+    end
+
+    test "update task event", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/")
+
+      refute render(view) =~ "testKey"
+
+      view
+      |> element("##{@table_id}-row-0")
+      |> render_click()
+
+      assert render(view) =~ "Task Information"
+
+      view
+      |> form("form##{@form_id}",
+        task: %{
+          title: "testKey",
+          description: "Test Label"
+        }
+      )
+      |> render_change()
+
+      view |> form("form##{@form_id}") |> render_submit()
+
+      Process.sleep(500)
+
+      refute render(view) =~ "Task Information"
+      assert render(view) =~ "Tasks"
+      assert render(view) =~ "testKey"
+      assert render(view) =~ "Task  was updated"
+    end
+
+    test "create task event", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/")
+
+      refute render(view) =~ "testKey"
+
+      view
+      |> element("#table_create_button")
+      |> render_click()
+
+      assert render(view) =~ "New Task"
+
+      view
+      |> form("form##{@form_id}",
+        task: %{
+          title: "testKey",
+          description: "Test Label"
+        }
+      )
+      |> render_change()
+
+      view |> form("form##{@form_id}") |> render_submit()
+
+      Process.sleep(500)
+
+      refute render(view) =~ "Task Information"
+      assert render(view) =~ "Tasks"
+      assert render(view) =~ "Task  was created"
+    end
+
+    test "delete task event", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/")
+
+      assert render(view) =~ "some title 1"
+
+      view
+      |> element("##{@table_id}-row-0")
+      |> render_click()
+
+      assert render(view) =~ "Task Information"
+
+      view
+      |> element("[phx-click='drawer_confirm_delete_modal']")
+      |> render_click()
+
+      assert render(view) =~ "Delete Task?"
+      assert render(view) =~ "some title 1"
+
+      view
+      |> element("[phx-click='delete']")
+      |> render_click()
+
+      Process.sleep(1000)
+
+#      refute render(view) =~ "Task Information"
+      assert render(view) =~ "Tasks"
+      assert render(view) =~ "Task some title 1 was deleted"
+    end
   end
 end

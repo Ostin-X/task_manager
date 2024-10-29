@@ -120,4 +120,6 @@ defmodule TaskManagerWeb.TasksHandleEvents do
        current_page: current_page
      )}
   end
+
+  def render(_), do: nil
 end

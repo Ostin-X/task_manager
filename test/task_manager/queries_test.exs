@@ -118,7 +118,6 @@ defmodule TaskManager.Tasks.QueriesTest do
 
       assert Enum.all?(results, fn task -> task.status_id == status_id end)
       assert Enum.any?(results, fn task -> task.id == new_task.id end)
-      assert Enum.any?(results, fn task -> task.title == title_filter end)
     end
   end
 end

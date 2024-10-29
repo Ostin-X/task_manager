@@ -79,7 +79,7 @@ defmodule TaskManagerWeb.TasksTableComponent do
     topic = "task:#{task.id}"
 
     TaskManagerWeb.Endpoint.subscribe(topic)
-#        Phoenix.PubSub.subscribe(TaskManager.PubSub, topic)
+    #        Phoenix.PubSub.subscribe(TaskManager.PubSub, topic)
     TaskManagerWeb.Presence.track(self(), topic, socket.id, %{})
 
     Drawer.open("tasks_drawer")
@@ -109,7 +109,7 @@ defmodule TaskManagerWeb.TasksTableComponent do
   def render(assigns) do
     ~F"""
     <div class="flex items-center">
-      <Button on_click="table_create_drawer" class="bg-bulma ps-4 pe-4 py-5">Add New Task</Button>
+      <Button id="table_create_button" on_click="table_create_drawer" class="bg-bulma ps-4 pe-4 py-5">Add New Task</Button>
       <h1 class="text-3xl font-bold flex-grow ml-4">Tasks</h1>
     </div>
     <div class="flex space-x-4 my-4">
@@ -118,6 +118,7 @@ defmodule TaskManagerWeb.TasksTableComponent do
     <div>
       <PaginationComponent {=@total_pages} {=@current_page} {=@total_tasks} />
       <Table
+        id="tasks_table"
         items={task <- @tasks}
         {=@sort}
         {=@selected}

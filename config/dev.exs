@@ -2,13 +2,13 @@ import Config
 
 # Configure your database
 config :task_manager, TaskManager.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "task_manager_dev",
+  username: System.get_env("DB_USERNAME") || "postgres",
+  password: System.get_env("DB_PASSWORD") || "postgres",
+  hostname: System.get_env("DB_HOST") || "localhost",
+  database: System.get_env("DB_NAME") || "task_manager_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
-  port: 5433,
+  port: String.to_integer(System.get_env("DB_PORT") || "5433"),
   pool_size: 10
 
 # For development, we disable any cache and enable
@@ -20,7 +20,7 @@ config :task_manager, TaskManager.Repo,
 config :task_manager, TaskManagerWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: 4000],
+  http: [ip: {0, 0, 0, 0}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,

@@ -4,12 +4,14 @@ defmodule TaskManager.TasksFixtures do
   entities via the `TaskManager.Tasks` context.
   """
 
+  import TaskManager.AccountsFixtures
+
   @doc """
   Generate a task.
   """
   def task_fixture(attrs \\ %{}) do
-    user = Map.get(attrs, :user) || TaskManager.AccountsFixtures.user_fixture()
-    status = Map.get(attrs, :status) || TaskManager.TasksFixtures.status_fixture()
+    user = Map.get(attrs, :user) || user_fixture()
+    status = Map.get(attrs, :status) || status_fixture()
     title = Map.get(attrs, :title) || "some title"
 
     {:ok, task} =
@@ -29,7 +31,9 @@ defmodule TaskManager.TasksFixtures do
     users = Map.get(attrs, :users)
     statuses = Map.get(attrs, :statuses)
     number = Map.get(attrs, :number) || 10
-    for i <- 1..number, do: task_fixture(%{user: Enum.random(users), status: Enum.random(statuses), title: "some title #{i}"})
+
+    for i <- 1..number,
+        do: task_fixture(%{user: Enum.random(users), status: Enum.random(statuses), title: "some title #{i}"})
   end
 
   def status_fixture(attrs \\ %{}) do
@@ -47,6 +51,21 @@ defmodule TaskManager.TasksFixtures do
 
   def create_statuses_fixture(attrs \\ %{}) do
     number = Map.get(attrs, :number) || 2
-    for i <- 1..number, do: status_fixture(%{name: "some name #{i}"})
+    status_names = ["pending"] ++ for i <- 2..number, do: "some name #{i}"
+
+    for name <- status_names, do: status_fixture(%{name: name})
+  end
+
+  def setup_database(_context) do
+    user1 = user_fixture()
+#    user2 = user_fixture()
+    users = [user1]
+
+    [status1, status2] = create_statuses_fixture(%{number: 2})
+    statuses = [status1, status2]
+
+    create_tasks_fixture(%{users: users, statuses: statuses, number: 30})
+
+    {:ok, user1: user1, status1: status1, status2: status2}
   end
 end
